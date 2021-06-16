@@ -5,12 +5,13 @@
 Summary:	Belledonne Communications' vCard 4 parsing library
 Summary(pl.UTF-8):	Biblioteka Belledonne Communications do analizy formatu vCard 4
 Name:		belcard
-Version:	1.0.2
+Version:	4.5.20
 Release:	1
 License:	GPL v2+
 Group:		Libraries
-Source0:	https://linphone.org/releases/sources/belcard/%{name}-%{version}.tar.gz
-# Source0-md5:	35f227dfa46be16d4b7ecfd828e1887e
+#Source0Download: https://gitlab.linphone.org/BC/public/belcard/-/tags
+Source0:	https://gitlab.linphone.org/BC/public/belcard/-/archive/%{version}/%{name}-%{version}.tar.bz2
+# Source0-md5:	6c0ebca77e42cc8591bc2c895458e3ef
 Patch0:		%{name}-pc.patch
 URL:		https://linphone.org/
 BuildRequires:	autoconf >= 2.63
@@ -59,7 +60,7 @@ Static BelCard library.
 Statyczna biblioteka BelCard.
 
 %prep
-%setup -q -n %{name}-%{version}-0
+%setup -q
 %patch0 -p1
 
 %build
@@ -90,7 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS NEWS README.md
+%doc CHANGELOG.md README.md
 %attr(755,root,root) %{_bindir}/belcard-folder
 %attr(755,root,root) %{_bindir}/belcard-parser
 %attr(755,root,root) %{_bindir}/belcard-unfolder
