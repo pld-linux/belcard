@@ -12,7 +12,7 @@ Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/belcard/-/tags
 Source0:	https://gitlab.linphone.org/BC/public/belcard/-/archive/%{version}/%{name}-%{version}.tar.bz2
 # Source0-md5:	6c0ebca77e42cc8591bc2c895458e3ef
-Patch0:		%{name}-pc.patch
+Patch0:		%{name}-static.patch
 URL:		https://linphone.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake
@@ -64,6 +64,12 @@ Statyczna biblioteka BelCard.
 %patch0 -p1
 
 %build
+install -d build
+cd build
+%cmake ..
+
+%{__make}
+%if 0
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
@@ -73,16 +79,30 @@ Statyczna biblioteka BelCard.
 	--disable-silent-rules \
 	%{?with_static_libs:--enable-static}
 %{__make}
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 # obsoleted by pkg-config
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libbelcard.la
+#%{__rm} $RPM_BUILD_ROOT%{_libdir}/libbelcard.la
 
+# disable completeness check incompatible with split packaging
+%{__sed} -i -e '/^foreach(target .*IMPORT_CHECK_TARGETS/,/^endforeach/d; /^unset(_IMPORT_CHECK_TARGETS)/d' $RPM_BUILD_ROOT%{_datadir}/belcard/cmake/belcardTargets.cmake
+
+# missing from cmake
+test ! -f $RPM_BUILD_ROOT%{_pkgconfigdir}/belcard.pc
+install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
+%{__sed} -e 's,@CMAKE_INSTALL_PREFIX@,%{_prefix},' \
+	-e 's,@PROJECT_NAME@,belcard,' \
+	-e 's,@PROJECT_VERSION@,%{version},' \
+	-e 's,@CMAKE_INSTALL_FULL_LIBDIR@,%{_libdir},' \
+	-e 's,@LIBS_PRIVATE@,-lbelr -lbctoolbox,' \
+	-e 's,@CMAKE_INSTALL_FULL_INCLUDEDIR@,%{_includedir},' \
+	belcard.pc.in >$RPM_BUILD_ROOT%{_pkgconfigdir}/belcard.pc
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -95,14 +115,21 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/belcard-folder
 %attr(755,root,root) %{_bindir}/belcard-parser
 %attr(755,root,root) %{_bindir}/belcard-unfolder
-%attr(755,root,root) %{_libdir}/libbelcard.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbelcard.so.0
+%attr(755,root,root) %{_bindir}/belcard_tester
+%attr(755,root,root) %{_libdir}/libbelcard.so.1
+%{_datadir}/belcard_tester
+# dirs should belong to belr?
+%dir %{_datadir}/belr
+%dir %{_datadir}/belr/grammars
+%{_datadir}/belr/grammars/vcard_grammar
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libbelcard.so
 %{_includedir}/belcard
 %{_pkgconfigdir}/belcard.pc
+%dir %{_datadir}/belcard
+%{_datadir}/belcard/cmake
 
 %if %{with static_libs}
 %files static
