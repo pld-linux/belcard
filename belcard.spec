@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_without	static_libs	# don't build static libraries
+%bcond_without	static_libs	# static library
 #
 Summary:	Belledonne Communications' vCard 4 parsing library
 Summary(pl.UTF-8):	Biblioteka Belledonne Communications do analizy formatu vCard 4
@@ -16,13 +16,13 @@ Patch0:		%{name}-static.patch
 URL:		https://linphone.org/
 BuildRequires:	bctoolbox-devel >= 0.0.3
 BuildRequires:	bcunit-devel
-BuildRequires:	belr-devel >= 4.5.0
+BuildRequires:	belr-devel >= 4.5.20
 BuildRequires:	cmake >= 3.1
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	pkgconfig
 BuildRequires:	xxd
 Requires:	bctoolbox >= 0.0.3
-Requires:	belr >= 4.5.0
+Requires:	belr >= 4.5.20
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -37,7 +37,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki BelCard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	bctoolbox-devel >= 0.0.3
-Requires:	belr-devel >= 4.5.0
+Requires:	belr-devel >= 4.5.20
 Requires:	libstdc++-devel >= 6:4.7
 
 %description devel
@@ -63,8 +63,8 @@ Statyczna biblioteka BelCard.
 %patch0 -p1
 
 %build
-install -d build
-cd build
+install -d builddir
+cd builddir
 %cmake .. \
 	%{!?with_static_libs:-DENABLE_STATIC=OFF}
 
@@ -73,7 +73,7 @@ cd build
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} -C build install \
+%{__make} -C builddir install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 # disable completeness check incompatible with split packaging
@@ -105,9 +105,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/belcard_tester
 %attr(755,root,root) %{_libdir}/libbelcard.so.1
 %{_datadir}/belcard_tester
-# dirs should belong to belr?
-%dir %{_datadir}/belr
-%dir %{_datadir}/belr/grammars
 %{_datadir}/belr/grammars/vcard_grammar
 
 %files devel
