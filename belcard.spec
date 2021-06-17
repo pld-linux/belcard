@@ -14,16 +14,15 @@ Source0:	https://gitlab.linphone.org/BC/public/belcard/-/archive/%{version}/%{na
 # Source0-md5:	6c0ebca77e42cc8591bc2c895458e3ef
 Patch0:		%{name}-static.patch
 URL:		https://linphone.org/
-BuildRequires:	autoconf >= 2.63
-BuildRequires:	automake
 BuildRequires:	bctoolbox-devel >= 0.0.3
 BuildRequires:	bcunit-devel
-BuildRequires:	belr-devel
+BuildRequires:	belr-devel >= 4.5.0
+BuildRequires:	cmake >= 3.1
 BuildRequires:	libstdc++-devel >= 6:4.7
-BuildRequires:	libtool >= 2:2
 BuildRequires:	pkgconfig
 BuildRequires:	xxd
 Requires:	bctoolbox >= 0.0.3
+Requires:	belr >= 4.5.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -38,7 +37,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki BelCard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	bctoolbox-devel >= 0.0.3
-Requires:	belr-devel
+Requires:	belr-devel >= 4.5.0
 Requires:	libstdc++-devel >= 6:4.7
 
 %description devel
@@ -66,29 +65,16 @@ Statyczna biblioteka BelCard.
 %build
 install -d build
 cd build
-%cmake ..
+%cmake .. \
+	%{!?with_static_libs:-DENABLE_STATIC=OFF}
 
 %{__make}
-%if 0
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	--disable-silent-rules \
-	%{?with_static_libs:--enable-static}
-%{__make}
-%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
-
-# obsoleted by pkg-config
-#%{__rm} $RPM_BUILD_ROOT%{_libdir}/libbelcard.la
 
 # disable completeness check incompatible with split packaging
 %{__sed} -i -e '/^foreach(target .*IMPORT_CHECK_TARGETS/,/^endforeach/d; /^unset(_IMPORT_CHECK_TARGETS)/d' $RPM_BUILD_ROOT%{_datadir}/belcard/cmake/belcardTargets.cmake
@@ -103,6 +89,7 @@ install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 	-e 's,@LIBS_PRIVATE@,-lbelr -lbctoolbox,' \
 	-e 's,@CMAKE_INSTALL_FULL_INCLUDEDIR@,%{_includedir},' \
 	belcard.pc.in >$RPM_BUILD_ROOT%{_pkgconfigdir}/belcard.pc
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
