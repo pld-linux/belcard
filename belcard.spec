@@ -5,24 +5,25 @@
 Summary:	Belledonne Communications' vCard 4 parsing library
 Summary(pl.UTF-8):	Biblioteka Belledonne Communications do analizy formatu vCard 4
 Name:		belcard
-Version:	4.5.20
+Version:	5.2.51
 Release:	1
-License:	GPL v2+
+License:	GPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/belcard/-/tags
 Source0:	https://gitlab.linphone.org/BC/public/belcard/-/archive/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	6c0ebca77e42cc8591bc2c895458e3ef
+# Source0-md5:	0cd0087d72ac00e4b8a669344216823f
 Patch0:		%{name}-static.patch
 URL:		https://linphone.org/
 BuildRequires:	bctoolbox-devel >= 0.0.3
 BuildRequires:	bcunit-devel
-BuildRequires:	belr-devel >= 4.5.20
+BuildRequires:	belr-devel >= 5
 BuildRequires:	cmake >= 3.1
 BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	pkgconfig
+BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	xxd
 Requires:	bctoolbox >= 0.0.3
-Requires:	belr >= 4.5.20
+Requires:	belr >= 5
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -37,7 +38,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki BelCard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	bctoolbox-devel >= 0.0.3
-Requires:	belr-devel >= 4.5.20
+Requires:	belr-devel >= 5
 Requires:	libstdc++-devel >= 6:4.7
 
 %description devel
