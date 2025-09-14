@@ -5,13 +5,13 @@
 Summary:	Belledonne Communications' vCard 4 parsing library
 Summary(pl.UTF-8):	Biblioteka Belledonne Communications do analizy formatu vCard 4
 Name:		belcard
-Version:	5.4.17
+Version:	5.4.38
 Release:	1
 License:	GPL v3+
 Group:		Libraries
 #Source0Download: https://gitlab.linphone.org/BC/public/belcard/-/tags
 Source0:	https://gitlab.linphone.org/BC/public/belcard/-/archive/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	2743b109f434ed6e8de33655399d4b43
+# Source0-md5:	9e8dacc4c237a64ee783d0683c952b83
 URL:		https://linphone.org/
 BuildRequires:	bctoolbox-devel >= 5.3.0
 BuildRequires:	bcunit-devel
